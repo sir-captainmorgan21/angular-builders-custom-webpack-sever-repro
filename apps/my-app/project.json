@@ -9,7 +9,7 @@
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/my-app",
+        "outputPath": "dist/apps/my-app/browser",
         "index": "apps/my-app/src/index.html",
         "main": "apps/my-app/src/main.ts",
         "polyfills": "apps/my-app/src/polyfills.ts",
@@ -83,6 +83,90 @@
         "jestConfig": "apps/my-app/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "server": {
+      "executor": "@angular-devkit/build-angular:server",
+      "options": {
+        "outputPath": "dist/apps/apps/my-app/server",
+        "main": "apps/my-app/server.ts",
+        "tsConfig": "apps/my-app/tsconfig.server.json"
+      },
+      "configurations": {
+        "production": {
+          "outputHashing": "media",
+          "fileReplacements": [
+            {
+              "replace": "apps/my-app/src/environments/environment.ts",
+              "with": "apps/my-app/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": false,
+          "sourceMap": true,
+          "extractLicenses": false
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "server-custom": {
+      "executor": "@angular-builders/custom-webpack:server",
+      "options": {
+        "outputPath": "dist/apps/apps/my-app/server",
+        "main": "apps/my-app/server.ts",
+        "tsConfig": "apps/my-app/tsconfig.server.json",
+        "customWebpackConfig": {
+          "path": "custom-webpack.config.js"
+        }
+      },
+      "configurations": {
+        "production": {
+          "outputHashing": "media",
+          "fileReplacements": [
+            {
+              "replace": "apps/my-app/src/environments/environment.ts",
+              "with": "apps/my-app/src/environments/environment.prod.ts"
+            }
+          ]
+        },
+        "development": {
+          "optimization": false,
+          "sourceMap": true,
+          "extractLicenses": false
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve-ssr": {
+      "executor": "@nguniversal/builders:ssr-dev-server",
+      "configurations": {
+        "development": {
+          "browserTarget": "my-app:build:development",
+          "serverTarget": "my-app:server:development"
+        },
+        "production": {
+          "browserTarget": "my-app:build:production",
+          "serverTarget": "my-app:server:production"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "prerender": {
+      "executor": "@nguniversal/builders:prerender",
+      "options": {
+        "routes": ["/"]
+      },
+      "configurations": {
+        "development": {
+          "browserTarget": "my-app:build:development",
+          "serverTarget": "my-app:server:development"
+        },
+        "production": {
+          "browserTarget": "my-app:build:production",
+          "serverTarget": "my-app:server:production"
+        }
+      },
+      "defaultConfiguration": "production"
     }
   },
   "tags": []
